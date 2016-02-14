@@ -36,17 +36,24 @@ IS_DEFAULT_WORKSPACE_PATH = 0
 IS_AUTO_GENERATE_PATCHNAME = 1
 
 
-# 创建一个补丁生成类
 class Patch():
-    patchFile           = ''
-    projectName         = ''
-    projectPath         = ''
-    patchFileList       = []  # 补丁文件列表
-    filterPatchFileList = []  # 被过滤的文件列表
-    patchLog            = []  # 日志信息列表
+    """补丁生成类.
+
+    版本号 v1.1
+
+    新增对象内部类的class文件生成
+    """
+    patchFile            = ''
+    projectName          = ''
+    projectPath          = ''
+    patchFileList        = []       # 补丁文件列表
+    filterPatchFileList  = []       # 被过滤的文件列表
+    patchLog             = []       # 日志信息列表
+    isSelectWorkpacePath = False    # 是否以选择项目路径
     
-    # 构造函数
     def __init__(self):
+        """构造函数"""
+
         # 解析配置文件
         self.parseConfigFile()
 
@@ -56,8 +63,10 @@ class Patch():
         # print(IS_DEFAULT_WORKSPACE_PATH)
         # pass
 
-    # 开始打补丁
+
     def start(self):
+        """开始打补丁"""
+        
         # 选择SVN补丁日志文件
         self.selectFile()
         # 生成补丁包名称
@@ -69,8 +78,10 @@ class Patch():
         # 生成补丁包
         self.generatePatch()
 
-    # 选择文件
+
     def selectFile(self):
+        """选择文件"""
+        
         global IS_DEFAULT_SVN_LOG_PATH
         global DEFAULT_SVN_LOG_PATH
 
@@ -82,8 +93,10 @@ class Patch():
         else:
             self.patchFile = DEFAULT_SVN_LOG_PATH
 
-    # 解析SVN补丁日志文件
+
     def parseSvnPatchFile(self):
+        """解析SVN补丁日志文件"""
+        
         global FILTER_EXTEN
 
 
@@ -130,6 +143,24 @@ class Patch():
                     possibleFilename = possibleFilename.replace('src/', 'WebRoot/WEB-INF/classes/')
                     possibleFilename = possibleFilename.replace('.java', '.class')
 
+                    # 新增内部类的class文件 20160214
+                    if os.path.splitext(possibleFilename)[1] == '.class':
+                        pathAndFileList = os.path.split(possibleFilename)   # ('路径', '文件名')
+                        
+                        if len(pathAndFileList) >= 2:
+                            classPath = pathAndFileList[0]
+
+                            # 获取项目空间路径
+                            self.projectPath = self.getWorkspacePath()
+                            
+                            # 遍历该路径下所有class文件
+                            allFileList = os.listdir(self.projectPath + '/' + classPath)
+                            for allFile in allFileList:
+                                filename = os.path.split(allFile)[1]
+                                soureFilename = os.path.splitext(pathAndFileList[1])[0] + '$'   # $内部类分隔符
+                                if filename[0: len(soureFilename)] == soureFilename:
+                                    self.addPatchFile(classPath + '/' + allFile)
+                                            
                     self.addPatchFile(possibleFilename)
 
                     # 保留java源文件
@@ -179,8 +210,10 @@ class Patch():
         # print(self.patchFileList)
         patchFile.close()
 
-    # 添加文件至解析完成的补丁文件
+    
     def addPatchFile(self, patchFilename):
+        """添加文件至解析完成的补丁文件"""
+        
         isAllow = False
         for exten in FILTER_EXTEN:
             if patchFilename[0 - len(exten):] == exten:
@@ -194,8 +227,9 @@ class Patch():
             self.patchFileList.append(patchFilename)
     
 
-    # 生成补丁包
     def generatePatch(self):
+        """生成补丁包"""
+        
         global PATCH_GENERATE_PATH
         global FILTER_TARGET_DIR
         global PATCH_NAME
@@ -203,11 +237,14 @@ class Patch():
         global DEFAULT_WORKSPACE_PATH
 
         # 设置项目地址
-        if IS_DEFAULT_WORKSPACE_PATH != '1':
+        '''if IS_DEFAULT_WORKSPACE_PATH != '1':
             projectPath = tkFD.askdirectory(initialdir="/home/",title="选择工作空间") + '/' + self.projectName
         else:
             projectPath = DEFAULT_WORKSPACE_PATH + '/' + self.projectName
 
+        self.projectPath = projectPath'''
+
+        projectPath = self.getWorkspacePath()
         self.projectPath = projectPath
         
         # 补丁生产目录添加上补丁名称与项目名称
@@ -243,15 +280,43 @@ class Patch():
                 shutil.copyfile(projectPath + '/' + patchFile,  patchDir + targetPatchFile)
 
                 # print('  >> 拷贝文件：', projectPath)
-                self.patchLog.append('  >> 拷贝文件：' + projectPath + '/' + patchFile)
+                self.patchLog.append('  >> 拷贝文件：' + patchFile) # projectPath + '/'
             else:
                 # print('  >> 不存在的：', projectPath + '/' + patchFile)
-                self.patchLog.append('  >> 不存在的：' + projectPath + '/' + patchFile)
+                self.patchLog.append('  >> 不存在的：' + patchFile) # projectPath + '/'
 
         self.projectPath = projectPath
+
+
+    def getWorkspacePath(self):
+        """获取项目路径
+
+        返回项目路径
+        
+        """
+
+        global IS_DEFAULT_WORKSPACE_PATH
+        global DEFAULT_WORKSPACE_PATH
+
+        if self.isSelectWorkpacePath == False:
+        
+            # 设置项目地址
+            if IS_DEFAULT_WORKSPACE_PATH != '1':
+                projectPath = tkFD.askdirectory(initialdir="/home/",title="选择工作空间") + '/' + self.projectName
+            else:
+                projectPath = DEFAULT_WORKSPACE_PATH + '/' + self.projectName
+
+            self.isSelectWorkpacePath = True
+
+            return projectPath
+
+        return self.projectPath
+        
     
-    # 打印解析到的补丁文件
+
     def printPatchFile(self):
+        """打印解析到的补丁文件"""
+        
         # print()
         # print("-----------------------------------补丁包文件-----------------------------------")
         # print('解析到的补丁文件：')
@@ -259,16 +324,18 @@ class Patch():
         self.patchLog.append('解析到的补丁文件：')
         for filename in self.patchFileList:
             # print('  >>', filename)
-            self.patchLog.append('  >>' + filename)
+            self.patchLog.append('  >> ' + filename)
         # print("--------------------------------------------------------------------------------")
 
         self.patchLog.append('\r\n')
         self.patchLog.append('被过滤的补丁文件：')
         for filename in self.filterPatchFileList:
-            self.patchLog.append('  >>' + filename)
+            self.patchLog.append('  >> ' + filename)
 
-    # 获取补丁名称
+
     def inputPatchName(self):
+        """获取补丁名称"""
+        
         global PATCH_NAME
         
         patchName = input("请输入补丁名称:")
@@ -278,8 +345,10 @@ class Patch():
 
         PATCH_NAME = patchName
 
-    # 解析配置文件
+
     def parseConfigFile(self):
+        """解析配置文件"""
+        
         global DEFAULT_SVN_LOG_PATH
         global IS_DEFAULT_SVN_LOG_PATH
         global DEFAULT_WORKSPACE_PATH
@@ -317,8 +386,10 @@ class Patch():
             configFile.close()
         # pass
 
-    # 生成补丁包名称
+    
     def generatePatchName(self):
+        """生成补丁包名称"""
+        
         global IS_AUTO_GENERATE_PATCHNAME
         global PATCH_NAME
         
@@ -344,8 +415,10 @@ class Patch():
         else:
             self.inputPatchName()
 
-    # 生成日志
+    
     def generateLog(self):
+        """生成日志"""
+        
         if not IS_EXCEPTION:
             if os.path.exists(PATCH_GENERATE_PATH + PATCH_NAME) == False:
                     os.makedirs(PATCH_GENERATE_PATH + PATCH_NAME)
@@ -364,7 +437,10 @@ class Patch():
 
             print('  >> 生成文件：补丁日志文件完成')
 
+    
 def cur_file_dir():
+     """获取当前路径"""
+
      #获取脚本路径
      path = sys.path[0]
 
