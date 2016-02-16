@@ -1,4 +1,4 @@
-# 根据SVN增量补丁日志，自动生成补丁包
+# 根据SVN增量补丁日志，自动生成补丁包 #
 import tkinter.filedialog as tkFD
 import os, shutil, time, sys
 from tkinter.filedialog import askopenfilename
@@ -480,4 +480,5 @@ if __name__ == "__main__":
     # input()
     print()
     os.system("pause")
+
     
