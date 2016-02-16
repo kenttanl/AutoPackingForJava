@@ -50,6 +50,7 @@ class Patch():
     filterPatchFileList  = []       # 被过滤的文件列表
     patchLog             = []       # 日志信息列表
     isSelectWorkpacePath = False    # 是否以选择项目路径
+    workspacePath        = ''       # 项目空间位置
     
     def __init__(self):
         """构造函数"""
@@ -69,6 +70,8 @@ class Patch():
         
         # 选择SVN补丁日志文件
         self.selectFile()
+        # 选择项目空间位置
+        self.getWorkspacePath()
         # 生成补丁包名称
         self.generatePatchName()
         # 解析文件
@@ -151,7 +154,7 @@ class Patch():
                             classPath = pathAndFileList[0]
 
                             # 获取项目空间路径
-                            self.projectPath = self.getWorkspacePath()
+                            self.projectPath = self.getWorkspacePath() + '/' + self.projectName
                             
                             # 遍历该路径下所有class文件
                             allFileList = os.listdir(self.projectPath + '/' + classPath)
@@ -244,7 +247,8 @@ class Patch():
 
         self.projectPath = projectPath'''
 
-        projectPath = self.getWorkspacePath()
+        
+        projectPath = self.getWorkspacePath() + '/' + self.projectName
         self.projectPath = projectPath
         
         # 补丁生产目录添加上补丁名称与项目名称
@@ -283,7 +287,7 @@ class Patch():
                 self.patchLog.append('  >> 拷贝文件：' + patchFile) # projectPath + '/'
             else:
                 # print('  >> 不存在的：', projectPath + '/' + patchFile)
-                self.patchLog.append('  >> 不存在的：' + patchFile) # projectPath + '/'
+                self.patchLog.append('  >> 不存在的：' + projectPath + '/' + patchFile) # projectPath + '/'
 
         self.projectPath = projectPath
 
@@ -302,15 +306,20 @@ class Patch():
         
             # 设置项目地址
             if IS_DEFAULT_WORKSPACE_PATH != '1':
-                projectPath = tkFD.askdirectory(initialdir="/home/",title="选择工作空间") + '/' + self.projectName
+                workspacePath = tkFD.askdirectory(initialdir="/home/",title="选择工作空间")
             else:
-                projectPath = DEFAULT_WORKSPACE_PATH + '/' + self.projectName
+                workspacePath = DEFAULT_WORKSPACE_PATH
 
             self.isSelectWorkpacePath = True
 
-            return projectPath
+            self.patchLog.append('\r\n')
+            self.patchLog.append('项目空间位置：' + workspacePath)
 
-        return self.projectPath
+            self.workspacePath = workspacePath
+            
+            return workspacePath
+
+        return self.workspacePath
         
     
 
