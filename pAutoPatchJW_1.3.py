@@ -1,4 +1,4 @@
-# 根据SVN增量补丁日志，自动生成补丁包 #
+# 根据SVN增量补丁日志，自动生成补丁包
 import tkinter.filedialog as tkFD
 import os, shutil, time, sys
 from tkinter.filedialog import askopenfilename
@@ -283,6 +283,12 @@ class Patch():
                 # 拷贝文件
                 shutil.copyfile(projectPath + '/' + patchFile,  patchDir + targetPatchFile)
 
+                # 新增保留源文件的修改时间与访问时间 20160216
+                soureFile = os.stat(projectPath + '/' + patchFile)
+                
+                os.utime(patchDir + targetPatchFile, (soureFile.st_atime, soureFile.st_mtime))
+                # End by 20160216
+
                 # print('  >> 拷贝文件：', projectPath)
                 self.patchLog.append('  >> 拷贝文件：' + patchFile) # projectPath + '/'
             else:
@@ -480,5 +486,4 @@ if __name__ == "__main__":
     # input()
     print()
     os.system("pause")
-
     
