@@ -20,7 +20,7 @@
 
 	8. ...
 
-最新版的功能更新，请参见[link](https://github.com/kentTanL/aAutoPackJw/blob/master/pAutoPatchJW_更新日志.txt)
+最新版的功能更新，请参见[pAutoPatchJW_更新日志.md](aAutoPackJw/pAutoPatchJW_更新日志.md)
 
 使用说明：
 注：使用前需要下载Python 3.x版本，建议使用3.5或以上版本（本脚本在Python 3.5 +Windows开发，并未测试在其他环境下的运行结果）
