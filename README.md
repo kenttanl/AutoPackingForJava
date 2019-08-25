@@ -1,6 +1,6 @@
 # pAutoPackJW
 
-[![version](https://img.shields.io/badge/python-3.0.0-blue.svg)](https://www.python.org/downloads/release/python-300/)
+[![version](https://img.shields.io/badge/python-3.5.0-blue.svg)](https://www.python.org/downloads/release/python-350/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/hhyo/archery/blob/master/LICENSE) 
 
 ## 介绍
@@ -22,7 +22,7 @@
 
 ## 使用说明
 
-注：使用前需要下载Python 3.x版本，建议使用3.5或以上版本（本脚本在 Python 3.5 +Windows 开发，并未测试在其他环境下的运行结果）
+注：使用前需要下载 Python 3.x 版本，建议使用 3.5 或以上版本（本脚本在 Python 3.5 + Windows 开发，并未测试在其他环境下的运行结果）
 
 ### 1.1 生成Svn补丁日志
 
@@ -43,8 +43,7 @@
 
 ![image](./imgs/result_1.png)
 
-但是对于上面的操作，还是太麻烦了，必须得选择补丁日志文件的位置，竟然还要选择项目空间的位置。好，既然大家都觉得麻烦，那么就需要用上配置文件了，配置文件代码如下：
-config.properties
+但是对于上面的操作，还是太麻烦了，必须得选择补丁日志文件的位置，竟然还要选择项目空间的位置。好，既然大家都觉得麻烦，那么就需要用上配置文件了，配置文件代码如下：[config.properties](./config.properties)
 
 ```shell
 # 这是补丁生成器的配置文件
