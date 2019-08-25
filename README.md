@@ -1,8 +1,13 @@
 # pAutoPackJW
 
+[![version](https://img.shields.io/badge/python-3.0.0-blue.svg)](https://www.python.org/downloads/release/python-300/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/hhyo/archery/blob/master/LICENSE) 
+
+## 介绍
+
 使用 Python 编写的根据 SVN 日志自动打补丁包的脚本，目前仅支持 java web 项目
 
-**功能或特征：**
+## 功能或特征
 
 1. 根据 SVN 创建补丁后的 TXT 文件自动生成补丁；
 2. 支持自动生成源文件与 class 文件；
@@ -13,13 +18,9 @@
 7. 支持补丁文件的修改时间与访问时间与源文件一致
 8. ...
 
-
-
 最新版的功能更新，请参见：[pAutoPatchJW_更新日志.md](https://github.com/kentTanL/aAutoPackJw/blob/master/pAutoPatchJW_更新日志.md)
 
-
-
-## 使用说明：
+## 使用说明
 
 注：使用前需要下载Python 3.x版本，建议使用3.5或以上版本（本脚本在 Python 3.5 +Windows 开发，并未测试在其他环境下的运行结果）
 
