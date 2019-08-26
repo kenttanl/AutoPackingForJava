@@ -1,7 +1,7 @@
 # pAutoPackJW
 
-[![version](https://img.shields.io/badge/python-3.5.0-blue.svg)](https://www.python.org/downloads/release/python-350/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://github.com/hhyo/archery/blob/master/LICENSE) 
+![version](https://img.shields.io/badge/python-3.5.0-red.svg)
+![License](https://img.shields.io/badge/MIT-blue.svg)
 
 ## 介绍
 
